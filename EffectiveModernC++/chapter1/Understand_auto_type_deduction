@@ -174,3 +174,40 @@ auto b{22};
 be careful when you use the `{}` ways with auto because the type can end up being `std::initializer_list<T>`.
 
 
+//Initialization list with different types
+auto x5 = { 1, 2, 3.0 }; // error! can't deduce T for std::initializer_list<T>
+
+
+
+//Using Explicit Initialization list for template function call
+
+auto x = { 11, 23, 9 }; // x's type is
+// std::initializer_list<int>
+template<typename T> // template with parameter
+void f(T param); // declaration equivalent to x's declaration
+f({ 11, 23, 9 }); // error! can't deduce type for T
+
+
+
+
+//Solution??
+
+
+template<typename T>
+void f(std::initializer_list<T> initList);
+f({ 11, 23, 9 }); // T deduced as int, and initList's type is std::initializer_list<int>
+
+
+//auto and template type deduction is that auto
+//assumes that a braced initializer represents a std::initializer_list, but template
+//type deduction doesn’t
+
+auto createInitList()
+{
+return { 1, 2, 3 }; // error: can't deduce type for { 1, 2, 3 }
+}
+
+std::vector<int> v;
+auto resetV =
+[&v](const auto& newValue) { v = newValue; }; // C++14 type for { 1, 2, 3 }
+resetV({ 1, 2, 3 });
